@@ -1,0 +1,4 @@
+venv/
+scheme.txt
+src/dyasi/__pycache__/
+src/dyasi/json/__pycache__/
