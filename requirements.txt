@@ -2,3 +2,4 @@ requests
 beartype
 pathlib
 json
+urllib3
