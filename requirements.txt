@@ -1,0 +1,4 @@
+requests
+beartype
+pathlib
+json
