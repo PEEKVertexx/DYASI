@@ -3,3 +3,4 @@ beartype
 pathlib
 urllib3
 colorama
+datetime
