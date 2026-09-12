@@ -6,3 +6,6 @@ class InvalidRequestError(Exception):
 
 class InvalidKeyError(Exception):
     pass
+
+class InvalidLogLevelError(Exception):
+    pass

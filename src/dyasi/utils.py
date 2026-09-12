@@ -2,6 +2,7 @@ from beartype import beartype
 from colorama import Fore, Style
 from typing import Any
 from datetime import datetime
+from exceptions import InvalidLogLevelError
 
 # Logging feature
 @beartype
@@ -10,7 +11,7 @@ def log(*messages: Any, level: str | None="info"):
     if level == "info":
         level = Fore.GREEN + Style.BRIGHT + level.upper()
     elif level == "error":
-        level = Fore.RED + Style.BRIGHT + type.upper()
+        level = Fore.RED + Style.BRIGHT + level.upper()
     elif level == "warn":
         level = "warning"
         level = "\033[38;2;255;215;0m" + Style.BRIGHT + level.upper()
@@ -18,6 +19,6 @@ def log(*messages: Any, level: str | None="info"):
     # NOTE for me: cleanize the feature
 
     # Logging
-    log_type = Fore.WHITE + "[" + level + Fore.WHITE + "]" + Style.RESET_ALL
+    log_level = Fore.WHITE + "[" + level + Fore.WHITE + "]" + Style.RESET_ALL
     timestamp = Fore.WHITE + "[" + Fore.CYAN + datetime.now().strftime("%H:%M:%S") + Fore.WHITE + "]" + Style.RESET_ALL
-    print(timestamp, log_type, *messages)
+    print(timestamp, log_level, *messages)
