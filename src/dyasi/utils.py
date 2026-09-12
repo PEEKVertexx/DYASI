@@ -15,8 +15,8 @@ def log(*messages: Any, level: str | None="info"):
     elif level == "warn":
         level = "warning"
         level = "\033[38;2;255;215;0m" + Style.BRIGHT + level.upper()
-
-    # NOTE for me: cleanize the feature
+    else:
+        raise InvalidLogLevelError("Log level is invalid.")
 
     # Logging
     log_level = Fore.WHITE + "[" + level + Fore.WHITE + "]" + Style.RESET_ALL
