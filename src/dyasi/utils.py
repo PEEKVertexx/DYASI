@@ -5,21 +5,19 @@ from datetime import datetime
 
 # Logging feature
 @beartype
-def log(*messages: Any, type: str | None="info"):
+def log(*messages: Any, level: str | None="info"):
     # Determining the log type
-    if type == "info":
-        type = Fore.GREEN + Style.BRIGHT + type.upper()
-    elif type == "error":
-        type = Fore.RED + Style.BRIGHT + type.upper()
-    elif type == "warn":
-        type = "warning"
-        type = "\033[38;2;255;215;0m" + Style.BRIGHT + type.upper()
+    if level == "info":
+        level = Fore.GREEN + Style.BRIGHT + level.upper()
+    elif level == "error":
+        level = Fore.RED + Style.BRIGHT + type.upper()
+    elif level == "warn":
+        level = "warning"
+        level = "\033[38;2;255;215;0m" + Style.BRIGHT + level.upper()
 
     # NOTE for me: cleanize the feature
 
     # Logging
-    log_type = Fore.WHITE + "[" + type + Fore.WHITE + "]" + Style.RESET_ALL
+    log_type = Fore.WHITE + "[" + level + Fore.WHITE + "]" + Style.RESET_ALL
     timestamp = Fore.WHITE + "[" + Fore.CYAN + datetime.now().strftime("%H:%M:%S") + Fore.WHITE + "]" + Style.RESET_ALL
     print(timestamp, log_type, *messages)
-
-log("test", type="warn")
