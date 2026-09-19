@@ -8,13 +8,18 @@ import keyword
 
 @dataclass
 class GetJSON:
+    python_object: dict
+
     @beartype
-    def __init__(self, python_object: dict) -> None:
+    def post__init__(self, python_object: dict) -> None:
             for key, value in python_object.items():
+                # If key is not an string
                 if not isinstance(key, str):
                     raise InvalidKeyError(f"The key \"{value}\" must be an string!")
+                # If the key is not a valid python identifier
                 elif not key.isidentifier():
                     raise InvalidKeyError(f"The key \"{value}\" is not a valid python identifier!")
+                # If the key is a reserved python keyword
                 elif keyword.iskeyword(key):
                     raise InvalidKeyError(f"The key \"{value}\" is a reserved python keyword")
                 else:
@@ -25,8 +30,10 @@ class GetJSON:
 
 @dataclass
 class Load:
+    file_path: str
+
     @beartype
-    def __init__(self, file_path: str) -> None:
+    def __post__init__(self, file_path: str) -> None:
         # Checking if it's a truthy
         if file_path:
             path = Path(file_path)
