@@ -2,3 +2,4 @@ venv/
 scheme.txt
 src/dyasi/__pycache__/
 src/dyasi/json/__pycache__/
+src/dyasi/http/__pycache__/

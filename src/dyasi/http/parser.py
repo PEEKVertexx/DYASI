@@ -3,8 +3,6 @@ from pathlib import Path
 from dataclasses import dataclass
 from beartype import beartype
 from dyasi.exceptions import InvalidPathError, InvalidRequestError
-from urllib.parse import urlparse
-from dyasi.utils import log
 from models import Request
 
     

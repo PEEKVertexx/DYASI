@@ -2,7 +2,7 @@ from beartype import beartype
 from colorama import Fore, Style
 from typing import Any
 from datetime import datetime
-from exceptions import InvalidLogLevelError
+from dyasi.exceptions import InvalidLogLevelError
 
 # Logging feature
 @beartype
