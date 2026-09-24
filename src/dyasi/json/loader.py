@@ -2,7 +2,7 @@ import json
 from json import JSONDecodeError
 from pathlib import Path
 from dataclasses import dataclass
-from dyasi.exceptions import InvalidPathError, InvalidKeyError
+from dyasi.exceptions import InvalidPathError, InvalidKeyError, InvalidJSONError
 from beartype import beartype
 import keyword
 
@@ -42,7 +42,12 @@ class Load:
                 if path.is_file():
                     try:
                         with path.open(mode="r", encoding="UTF-8") as file:
-                            self.__dict__.update(GetJSON(json.load(file)).__dict__)
+                            self.json_data = json.load(file)
+
+                            # Checking if JSON data is a dictionary
+                            if not isinstance(self.json_data, dict):
+                                raise InvalidJSONError("JSON must be a dictionary-like data!")
+                            self.__dict__.update(GetJSON(self.json_data).__dict__)
                     except PermissionError:
                         raise PermissionError(f"The user that you're executing this program with doesn't have permission to read \"{self.file_path}\". Try to add read permission to your current user through this command: chmod u+r {self.file_path}")
                     except JSONDecodeError:
@@ -53,3 +58,6 @@ class Load:
                 raise FileNotFoundError(f"\"{self.file_path}\" doesn't exist.")
         else:
             raise InvalidPathError("The value you provided as the file path is falsy.")
+        
+    def get_dict(self):
+        return self.json_data
