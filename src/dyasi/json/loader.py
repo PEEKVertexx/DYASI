@@ -6,13 +6,13 @@ from dyasi.exceptions import InvalidPathError, InvalidKeyError
 from beartype import beartype
 import keyword
 
+@beartype
 @dataclass
 class GetJSON:
     python_object: dict
 
-    @beartype
-    def post__init__(self, python_object: dict) -> None:
-            for key, value in python_object.items():
+    def __post_init__(self) -> None:
+            for key, value in self.python_object.items():
                 # If key is not an string
                 if not isinstance(key, str):
                     raise InvalidKeyError(f"The key \"{value}\" must be an string!")
@@ -28,15 +28,15 @@ class GetJSON:
                     else:
                         setattr(self, key, value)
 
+@beartype
 @dataclass
 class Load:
     file_path: str
 
-    @beartype
-    def __post__init__(self, file_path: str) -> None:
+    def __post_init__(self) -> None:
         # Checking if it's a truthy
-        if file_path:
-            path = Path(file_path)
+        if self.file_path:
+            path = Path(self.file_path)
 
             if path.exists():
                 if path.is_file():
@@ -44,12 +44,12 @@ class Load:
                         with path.open(mode="r", encoding="UTF-8") as file:
                             self.__dict__.update(GetJSON(json.load(file)).__dict__)
                     except PermissionError:
-                        raise PermissionError(f"The user that you're executing this program with doesn't have permission to read \"{file_path}\". Try to add read permission to your current user through this command: chmod u+r {file_path}")
+                        raise PermissionError(f"The user that you're executing this program with doesn't have permission to read \"{self.file_path}\". Try to add read permission to your current user through this command: chmod u+r {self.file_path}")
                     except JSONDecodeError:
-                        raise JSONDecodeError(f"Invalid JSON found in \"{file_path}\"")
+                        raise JSONDecodeError(f"Invalid JSON found in \"{self.file_path}\"")
                 else:
-                    raise IsADirectoryError(f"\"{file_path}\" is a directory.")
+                    raise IsADirectoryError(f"\"{self.file_path}\" is a directory.")
             else:
-                raise FileNotFoundError(f"\"{file_path}\" doesn't exist.")
+                raise FileNotFoundError(f"\"{self.file_path}\" doesn't exist.")
         else:
             raise InvalidPathError("The value you provided as the file path is falsy.")
