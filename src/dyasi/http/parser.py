@@ -3,7 +3,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from beartype import beartype
 from dyasi.exceptions import InvalidPathError, InvalidRequestError
-from models import Request
+from dyasi.http.models import Request, HTTPExchange
 
     
 @dataclass
@@ -57,13 +57,5 @@ class Parse:
             raise InvalidPathError("The value you provided as the file path is falsy.")
 
     def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.iteration_number < len(self.__REQUESTS):
-            request = self.__REQUESTS
-            self.iteration_number += 1
-            return request
-        else:
-            self.iteration_number = 0
-            raise StopIteration
+        for request in self.__REQUESTS:
+            yield request
