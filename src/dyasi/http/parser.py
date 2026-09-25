@@ -38,10 +38,10 @@ class Parse:
                                 except InvalidRequestError as reason:
                                     raise InvalidRequestError(f"Request with id \"{key}\" is not a valid request: {reason}")
                         # Checking if it's a list
-                        elif isinstance(REQUESTS, dict):
+                        elif isinstance(REQUESTS, list):
                             for index, request in enumerate(REQUESTS):
                                 try:
-                                    self.__REQUESTS.append(Request(value))
+                                    self.__REQUESTS.append(Request(request))
                                 except TypeError:
                                     raise TypeError(f"The value of request #{index} is not a dictionary")
                                 except InvalidRequestError as reason:
