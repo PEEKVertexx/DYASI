@@ -6,7 +6,7 @@ from dyasi.exceptions import InvalidLogLevelError
 
 # Logging feature
 @beartype
-def log(*messages: Any, level: str | None="info"):
+def log(*messages: Any, level: str | None="info") -> None:
     # Determining the log type
     if level == "info":
         level = Fore.GREEN + Style.BRIGHT + level.upper()
