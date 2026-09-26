@@ -9,3 +9,12 @@ class InvalidKeyError(Exception):
 
 class InvalidLogLevelError(Exception):
     pass
+
+class InvalidJSONError(Exception):
+    pass
+
+class MissingCheckFunction(Exception):
+    pass
+
+class ConfigError(Exception):
+    pass
