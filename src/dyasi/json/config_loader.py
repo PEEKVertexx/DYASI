@@ -6,7 +6,7 @@ class DefaultsCheck:
     loaded_object: Load
 
     def __post__init__(self):
-        LOADED_DICTIONARY: dict = self.loaded_object.get_dict()
+        LOADED_DICTIONARY: dict = self.loaded_object.json_data
         MODIFIED_DICTIONARY: dict = LOADED_DICTIONARY
 
         for key, value in LOADED_DICTIONARY:
@@ -23,4 +23,4 @@ class DefaultsCheck:
 
 
 # Imported JSON data
-DEFAULTS = DefaultsCheck("config/defaults.json")
+DEFAULTS = DefaultsCheck(Load("config/defaults.json"))
