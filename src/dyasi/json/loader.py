@@ -59,5 +59,6 @@ class Load:
         else:
             raise InvalidPathError("The value you provided as the file path is falsy.")
 
-    def create_object(self) -> None:
+    def create_object(self):
         self.__dict__.update(CreateObject(self.json_data).__dict__)
+        return self
