@@ -8,11 +8,11 @@ from dyasi.exceptions import InvalidLogLevelError
 @beartype
 def log(*messages: Any, level: str | None="info") -> None:
     # Determining the log type
-    if level == "info":
+    if level.lower() == "info":
         level = Fore.GREEN + Style.BRIGHT + level.upper()
-    elif level == "error":
+    elif level.lower() == "error":
         level = Fore.RED + Style.BRIGHT + level.upper()
-    elif level == "warn":
+    elif level.lower() == "warn":
         level = "warning"
         level = "\033[38;2;255;215;0m" + Style.BRIGHT + level.upper()
     else:
