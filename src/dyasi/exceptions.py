@@ -18,3 +18,6 @@ class MissingCheckFunction(Exception):
 
 class ConfigError(Exception):
     pass
+
+class ClientRequestError(Exception):
+    pass
