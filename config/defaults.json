@@ -1,0 +1,40 @@
+{
+    "version": "v0.1",
+    "uninteresting_headers": {
+        "remove": false,
+        "request_headers": [
+            "Accept-Encoding",
+            "Connection",
+            "Keep-Alive",
+            "Content-Length",
+            "Transfer-Encoding",
+            "TE",
+            "Trailer",
+            "Upgrade",
+            "Proxy-Connection",
+            "Proxy-Authorization",
+            "Via",
+            "Forwarded",
+            "Max-Forwards"
+        ],
+        "response_headers": [
+            "Date",
+            "Age",
+            "Connection",
+            "Keep-Alive",
+            "Content-Length",
+            "Transfer-Encoding",
+            "Trailer",
+            "Via",
+            "Warning",
+            "Upgrade",
+            "Accept-Ranges"
+        ]
+    },
+    "custom_header": {
+        "enabled": false,
+        "headers": {
+            "Scanner": "DYASI {version}"
+        }
+    }
+}
