@@ -1,6 +1,6 @@
 from dyasi.json.loader import Load, CreateObject
 import dyasi.json.checkers as checkers
-from dyasi.exceptions import MissingCheckFunction, ConfigError
+from dyasi.exceptions import ConfigError
 from dyasi.utils import log
 from dataclasses import dataclass
 
