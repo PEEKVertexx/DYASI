@@ -110,3 +110,5 @@ def custom_header(value: dict) -> dict:
     if value["enabled"]:
         # Validating the headers
         pass
+
+    return MODIFIED_VERSION
