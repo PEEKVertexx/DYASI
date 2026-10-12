@@ -34,7 +34,12 @@
     "custom_header": {
         "enabled": false,
         "headers": {
-            "Scanner": "DYASI {version}"
+            "Scanner": "DYASI v0.1"
         }
+    },
+    "scope": {
+        "enabled": false,
+        "in_scope_assets": [],
+        "out_scope_assets": []
     }
 }
