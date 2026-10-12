@@ -21,3 +21,6 @@ class ConfigError(Exception):
 
 class ClientRequestError(Exception):
     pass
+
+class ScopeEngineError(Exception):
+    pass
