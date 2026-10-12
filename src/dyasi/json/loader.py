@@ -10,23 +10,36 @@ import keyword
 @dataclass
 class CreateObject:
     python_object: dict
+    recursive: bool | None = True
+    # NOTE: use ignore headers feature only when you want recursion and don't want the values of headers key ( as it might be a dictionary )
+    keys_to_ignore: list | set | tuple | None
 
     def __post_init__(self) -> None:
             for key, value in self.python_object.items():
-                # If key is not an string
+                # Checking the key
+
+                ## If key is not an string
                 if not isinstance(key, str):
-                    raise InvalidKeyError(f"The key \"{value}\" must be an string!")
-                # If the key is not a valid python identifier
+                    raise InvalidKeyError(f"The key \"{key}\" must be an string!")
+                ## If the key is not a valid python identifier
                 elif not key.isidentifier():
-                    raise InvalidKeyError(f"The key \"{value}\" is not a valid python identifier!")
-                # If the key is a reserved python keyword
+                    raise InvalidKeyError(f"The key \"{key}\" is not a valid python identifier!")
+                ## If the key is a reserved python keyword
                 elif keyword.iskeyword(key):
-                    raise InvalidKeyError(f"The key \"{value}\" is a reserved python keyword")
-                else:
-                    if isinstance(value, dict):
-                        setattr(self, key, CreateObject(value))
-                    else:
-                        setattr(self, key, value)
+                    raise InvalidKeyError(f"The key \"{key}\" is a reserved python keyword")               
+
+                # Checking the value
+                if isinstance(value, dict):
+                    if self.ignore_headers:
+                        # Checking if the recursion is allowed
+                        if self.recursive:
+                            # Ignoring the headers if the key being headers
+                            if key in self.keys_to_ignore:
+                                pass
+                            else:
+                                setattr(self, key, CreateObject(value))
+                                continue
+                setattr(self, key, value)
 
 @beartype
 @dataclass
@@ -42,12 +55,11 @@ class Load:
                 if path.is_file():
                     try:
                         with path.open(mode="r", encoding="UTF-8") as file:
+                            self.json_data = json.load(file)
 
                             # Checking if JSON data is a dictionary
                             if not isinstance(self.json_data, dict):
                                 raise InvalidJSONError("JSON must be a dictionary-like data!")
-
-                            self.json_data = json.load(file)
                     except PermissionError:
                         raise PermissionError(f"The user that you're executing this program with doesn't have permission to read \"{self.file_path}\". Try to add read permission to your current user through this command: chmod u+r {self.file_path}")
                     except JSONDecodeError:
