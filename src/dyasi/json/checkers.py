@@ -1,5 +1,5 @@
 from beartype import beartype
-from src.dyasi.exceptions import ConfigError
+from dyasi.exceptions import ConfigError
 
 @beartype
 def version(value: str) -> str:
@@ -110,5 +110,74 @@ def custom_header(value: dict) -> dict:
     if value["enabled"]:
         # Validating the headers
         pass
+
+    return MODIFIED_VERSION
+
+@beartype
+def scope(value: dict) -> dict:
+    MODIFIED_VERSION: dict = {}
+
+    # Checking enabled key
+    if "enabled" not in value:
+        raise ConfigError("You must provide the key \"enabled\" with a boolean (true/false) value to help the software to determine that wheter it should use the functions related to the scope or not.")
+
+    # Checking the value of enabled key
+    if not isinstance(value["enabled"], bool):
+        raise ConfigError("the value of key \"enabled\" must be a boolean (true/false).")
+    
+    def check_assets(assets: list | None) -> list:
+        MODIFIED_ASSETS: list = []
+
+        # Checking if it's None
+        if not assets and (assets is not None) and not isinstance(assets, list):
+            raise ConfigError("assets must be a list or None , it could be even an empty list but you must provide a dictionary if you wish to add something in/out scope. The first key of it is what type of asset you want to specify (we currently support \"subdomain\" and \"path\") and the value of the firts key is the asset you want to specify")
+
+        # Checking if it consists of non-empty dictionaries
+        if not all(map(lambda asset: isinstance(asset, dict) and bool(asset), assets)):
+            raise ConfigError("The entire items of the in scope and out of scope value must be dictionary and they couldn't be empty.")
+
+        ## Checking the dictionaries
+        ## NOTE: we currently support subdomains and paths
+        for asset in assets:
+            first_key = next(iter(asset))
+
+            # Checking if the first key is an string
+            if not isinstance(first_key, str):
+                raise ConfigError("The first key of one of your assets is not an string!")
+
+            # Checking if it's a subdomain or path
+            elif first_key.strip() not in ["subdomain", "path"]:
+                raise ConfigError("The first key of the assets must be either \"subdomain\" or \"path\"")
+
+            # Checking the value
+            if not isinstance(asset[first_key], str):
+                raise ConfigError("The value of the first key of the assets cannot be empty!")
+            
+            elif not asset[first_key].strip():
+                raise ConfigError("The value of the first key of the assets cannot be empty!")
+
+            # Adding the asset to the modified assets
+            MODIFIED_ASSETS.append({
+                first_key.strip(): asset[first_key].strip()
+            })
+        
+        return MODIFIED_ASSETS
+
+    # Checking in scope assets
+    if "in_scope_assets" in value:
+        try:
+            MODIFIED_VERSION["in_scope_assets"] = check_assets(value["in_scope_assets"])
+        except ConfigError as e:
+            raise ConfigError(f"Error while check in scope assets: {e}")
+    # Checking out scope assets
+    elif "out_scope_assets" in value:
+        try:
+            # Adding the returned value of check_assets function to the modified version
+            MODIFIED_VERSION["out_scope_assets"] = check_assets(value["out_scope_assets"])
+        except ConfigError as e:
+            raise ConfigError(f"Error while check out scope assets: {e}")
+
+    # Adding the enabled key to modified version ( I didn't implement it before , because we might raise some exceptions or some exceptions occur while checking the value of both in scope and out scope assets , so why should we assign a key to a dictionary that we couldn't use? )
+    MODIFIED_VERSION["enabled"] = value["enabled"]
 
     return MODIFIED_VERSION
