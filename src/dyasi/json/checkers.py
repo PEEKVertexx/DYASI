@@ -124,6 +124,11 @@ def scope(value: dict) -> dict:
     # Checking the value of enabled key
     if not isinstance(value["enabled"], bool):
         raise ConfigError("the value of key \"enabled\" must be a boolean (true/false).")
+
+    # Checking if atleast in scope or out scope assets are provided in the case that the scope feature is enabled
+    if value["enabled"]:
+        if not ("in_scope_assets" in value or "out_scope_assets" in value):
+            raise ConfigError("You enabled the scope feature , then you must proivde atleast in or out scope assets")
     
     def check_assets(assets: list | None) -> list:
         MODIFIED_ASSETS: list = []
@@ -139,18 +144,25 @@ def scope(value: dict) -> dict:
         ## Checking the dictionaries
         ## NOTE: we currently support subdomains and paths
         for asset in assets:
+            # Checking if the length of items are more than one
+            if len(asset.items()) > 1:
+                raise ConfigError("dictionaries cannot have more than one pair!")
+
             first_key = next(iter(asset))
 
             # Checking if the first key is an string
             if not isinstance(first_key, str):
                 raise ConfigError("The first key of one of your assets is not an string!")
 
+            # Making first key lowercase and stripped
+            first_key = first_key.lower().strip()
+
             # Checking if it's a subdomain or path
-            elif first_key.strip() not in ["subdomain", "path"]:
+            if first_key not in ["subdomain", "path"]:
                 raise ConfigError("The first key of the assets must be either \"subdomain\" or \"path\"")
 
             # Checking the value
-            if not isinstance(asset[first_key], str):
+            elif not isinstance(asset[first_key], str):
                 raise ConfigError("The value of the first key of the assets cannot be empty!")
             
             elif not asset[first_key].strip():
@@ -158,24 +170,29 @@ def scope(value: dict) -> dict:
 
             # Adding the asset to the modified assets
             MODIFIED_ASSETS.append({
-                first_key.strip(): asset[first_key].strip()
+                first_key: asset[first_key].strip()
             })
         
         return MODIFIED_ASSETS
-
+    
     # Checking in scope assets
     if "in_scope_assets" in value:
         try:
             MODIFIED_VERSION["in_scope_assets"] = check_assets(value["in_scope_assets"])
+            MODIFIED_VERSION["in_scope_subdomains"] = [asset["subdomain"] for asset in MODIFIED_VERSION["in_scope_assets"] if "subdomain" in asset]
+            MODIFIED_VERSION["in_scope_paths"] = [asset["path"] for asset in MODIFIED_VERSION["in_scope_assets"] if "path" in asset]
         except ConfigError as e:
             raise ConfigError(f"Error while check in scope assets: {e}")
     else:
         MODIFIED_VERSION["in_scope_assets"] = []
+
     # Checking out scope assets
     if "out_scope_assets" in value:
         try:
             # Adding the returned value of check_assets function to the modified version
             MODIFIED_VERSION["out_scope_assets"] = check_assets(value["out_scope_assets"])
+            MODIFIED_VERSION["out_scope_subdomains"] = [asset["subdomain"] for asset in MODIFIED_VERSION["out_scope_assets"] if "subdomain" in asset]
+            MODIFIED_VERSION["out_scope_paths"] = [asset["path"] for asset in MODIFIED_VERSION["out_scope_assets"] if "path" in asset]
         except ConfigError as e:
             raise ConfigError(f"Error while check out scope assets: {e}")
     else:
@@ -183,5 +200,10 @@ def scope(value: dict) -> dict:
 
     # Adding the enabled key to modified version ( I didn't implement it before , because we might raise some exceptions or some exceptions occur while checking the value of both in scope and out scope assets , so why should we assign a key to a dictionary that we couldn't use? )
     MODIFIED_VERSION["enabled"] = value["enabled"]
+
+    # Checking if user provided atleast in or out scope assets if the scope feature is enabled
+    if value["enabled"]:
+        if not MODIFIED_VERSION["in_scope_assets"] and not MODIFIED_VERSION["out_scope_assets"]:
+            raise ConfigError("You enabled the scope feature , but you didn't proivde any assets")
 
     return MODIFIED_VERSION
