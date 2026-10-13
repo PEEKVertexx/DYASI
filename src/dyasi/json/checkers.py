@@ -169,13 +169,17 @@ def scope(value: dict) -> dict:
             MODIFIED_VERSION["in_scope_assets"] = check_assets(value["in_scope_assets"])
         except ConfigError as e:
             raise ConfigError(f"Error while check in scope assets: {e}")
+    else:
+        MODIFIED_VERSION["in_scope_assets"] = []
     # Checking out scope assets
-    elif "out_scope_assets" in value:
+    if "out_scope_assets" in value:
         try:
             # Adding the returned value of check_assets function to the modified version
             MODIFIED_VERSION["out_scope_assets"] = check_assets(value["out_scope_assets"])
         except ConfigError as e:
             raise ConfigError(f"Error while check out scope assets: {e}")
+    else:
+        MODIFIED_VERSION["out_scope_assets"] = []
 
     # Adding the enabled key to modified version ( I didn't implement it before , because we might raise some exceptions or some exceptions occur while checking the value of both in scope and out scope assets , so why should we assign a key to a dictionary that we couldn't use? )
     MODIFIED_VERSION["enabled"] = value["enabled"]
