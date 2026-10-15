@@ -63,12 +63,19 @@ class Request:
         elif not parsed.scheme in ["http", "https"]:
             raise InvalidRequestError("Your provided URL's scheme is not HTTP or HTTPS")
         elif not parsed.path:
+            parsed.path = "/"
             log("One of your provided requests hasn't a path , I'll consider the path as /", level="warn")
         elif not parsed.hostname:
             raise InvalidRequestError("Your provided URL doesn't have hostname part!")
 
         # Adding URL to the modified version of the self.request
         MODIFIED_REQUEST["url"] = self.request["url"].strip()
+        MODIFIED_REQUEST["path"] = parsed.path
+
+        if len(parsed.hostname.split(".")) >= 3:
+            MODIFIED_REQUEST["subdomain"] = ".".join(parsed.hostname.split(".")[:-2])
+        else:
+            MODIFIED_REQUEST["subdomain"] = None
 
         # Checking other parts
 
