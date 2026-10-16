@@ -68,14 +68,17 @@ class Request:
         elif not parsed.hostname:
             raise InvalidRequestError("Your provided URL doesn't have hostname part!")
 
+        # Checking hostname
+        hostname_components = parsed.hostname.split(".")
+
+        if len(hostname_components) < 3 and not all(hostname_components):
+            raise InvalidRequestError("Your provided hostname is invalid!")
+
         # Adding URL to the modified version of the self.request
         MODIFIED_REQUEST["url"] = self.request["url"].strip()
         MODIFIED_REQUEST["path"] = parsed.path
 
-        if len(parsed.hostname.split(".")) >= 3:
-            MODIFIED_REQUEST["subdomain"] = ".".join(parsed.hostname.split(".")[:-2])
-        else:
-            MODIFIED_REQUEST["subdomain"] = None
+        MODIFIED_REQUEST["hostname"] = parsed.hostname
 
         # Checking other parts
 
