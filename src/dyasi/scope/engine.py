@@ -83,5 +83,5 @@ class Scope:
         for request in self.__good_requests:
             yield request
 
-    def get_requests(self):
+    def get_requests(self) -> list[models.Request]:
         return self.__good_requests
