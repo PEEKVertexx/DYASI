@@ -82,3 +82,6 @@ class Scope:
     def __iter__(self):
         for request in self.__good_requests:
             yield request
+
+    def get_requests(self):
+        return self.__good_requests
