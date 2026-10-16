@@ -158,8 +158,8 @@ def scope(value: dict) -> dict:
             first_key = first_key.lower().strip()
 
             # Checking if it's a subdomain or path
-            if first_key not in ["subdomain", "path"]:
-                raise ConfigError("The first key of the assets must be either \"subdomain\" or \"path\"")
+            if first_key not in ["subdomain", "path", "sld", "tld"]:
+                raise ConfigError("The first key of the assets must be either \"subdomain\" , \"path\", \"sld\" or \"tld\"")
 
             # Checking the value
             elif not isinstance(asset[first_key], str):
@@ -181,6 +181,8 @@ def scope(value: dict) -> dict:
             MODIFIED_VERSION["in_scope_assets"] = check_assets(value["in_scope_assets"])
             MODIFIED_VERSION["in_scope_subdomains"] = [asset["subdomain"] for asset in MODIFIED_VERSION["in_scope_assets"] if "subdomain" in asset]
             MODIFIED_VERSION["in_scope_paths"] = [asset["path"] for asset in MODIFIED_VERSION["in_scope_assets"] if "path" in asset]
+            MODIFIED_VERSION["in_scope_slds"] = [asset["sld"] for asset in MODIFIED_VERSION["in_scope_assets"] if "sld" in asset] 
+            MODIFIED_VERSION["in_scope_tlds"] = [asset["tld"] for asset in MODIFIED_VERSION["in_scope_assets"] if "tld" in asset]
         except ConfigError as e:
             raise ConfigError(f"Error while check in scope assets: {e}")
     else:
@@ -193,6 +195,8 @@ def scope(value: dict) -> dict:
             MODIFIED_VERSION["out_scope_assets"] = check_assets(value["out_scope_assets"])
             MODIFIED_VERSION["out_scope_subdomains"] = [asset["subdomain"] for asset in MODIFIED_VERSION["out_scope_assets"] if "subdomain" in asset]
             MODIFIED_VERSION["out_scope_paths"] = [asset["path"] for asset in MODIFIED_VERSION["out_scope_assets"] if "path" in asset]
+            MODIFIED_VERSION["out_scope_slds"] = [asset["sld"] for asset in MODIFIED_VERSION["out_scope_assets"] if "sld" in asset]
+            MODIFIED_VERSION["out_scope_tlds"] = [asset["tld"] for asset in MODIFIED_VERSION["out_scope_assets"] if "tld" in asset]
         except ConfigError as e:
             raise ConfigError(f"Error while check out scope assets: {e}")
     else:
