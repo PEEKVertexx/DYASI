@@ -2,7 +2,6 @@ from beartype import beartype
 from dataclasses import dataclass
 from dyasi.exceptions import ScopeEngineError
 from dyasi.utils import log
-# NOTE: We're importing the defaults class , not the defaults variable.
 from dyasi.json.config_loader import DEFAULTS
 import dyasi.http.models as models
 
