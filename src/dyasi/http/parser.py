@@ -6,14 +6,18 @@ from dyasi.exceptions import InvalidPathError, InvalidRequestError
 from dyasi.http.models import HTTPExchange, Request
 from dyasi.scope.engine import Scope
 from dyasi.json.config_loader import DEFAULTS
+from requests import Response
 
-    
+@beartype
 @dataclass
 class Parse:
     file_path: str
 
-    @beartype
-    def __post__init__(self):
+    def __post_init__(self):
+        self.__ITEMS = []
+        self.__REQUESTS = []
+        self.__RESPONSES = []
+
         # Checking if it's a truthy
         if self.file_path:
             path = Path(self.file_path)
@@ -82,3 +86,6 @@ class Parse:
 
     def get_requests(self) -> list[Request]:
         return self.__REQUESTS
+
+    def get_responses(self) -> list[Response]:
+        return self.__RESPONSES
