@@ -3,7 +3,6 @@ from dyasi.exceptions import InvalidRequestError, ClientRequestError
 from dyasi.utils import log
 from urllib.parse import urlparse
 from dataclasses import dataclass
-import requests
 import dyasi.http.client as client
 from dyasi.json.config_loader import DEFAULTS
 
@@ -184,16 +183,8 @@ class Request:
 @beartype
 @dataclass
 class HTTPExchange:
-    request: Request
-    response: requests.Response | None
+    request_dictionary: dict
 
-    def __post__init__(self):
-        # Removing uninteresting headers from the request
-                
-
-        # Getting the response
-            if self.response is None:
-                try:
-                    self.response = client.send(self.request)
-                except ClientRequestError as e:
-                    raise ClientRequestError(e)
+    def __post_init__(self):
+        self.request = Request(self.request_dictionary)
+        self.response = client.send(self.request)
