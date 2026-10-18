@@ -3,7 +3,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from beartype import beartype
 from dyasi.exceptions import InvalidPathError, InvalidRequestError
-from dyasi.http.models import Request, HTTPExchange
+from dyasi.http.models import HTTPExchange, Request
 
     
 @dataclass
@@ -20,7 +20,7 @@ class Parse:
             if path.exists():
                 # Checking if the path is a file
                 if path.is_file():
-                    self.__REQUESTS: list[Request] = []
+                    self.__ITEMS: list[HTTPExchange] = []
 
                     with path.open(mode="r", encoding="UTF-8") as file:
                         # Converting JSON data to a python object
@@ -32,7 +32,10 @@ class Parse:
                             for key, value in REQUESTS.items():
                                 # Creating an object from the request
                                 try:
-                                    self.__REQUESTS.append(Request(value))
+                                    EXCHANGED_OBJECT = HTTPExchange(value)
+                                    self.__ITEMS.append(EXCHANGED_OBJECT)
+                                    self.__REQUESTS.append(EXCHANGED_OBJECT.request)
+                                    self.__RESPONSES.append(EXCHANGED_OBJECT.response)
                                 except TypeError:
                                     raise TypeError(f"The value of request with id {key} is not a dictionary!")
                                 except InvalidRequestError as reason:
@@ -41,7 +44,7 @@ class Parse:
                         elif isinstance(REQUESTS, list):
                             for index, request in enumerate(REQUESTS):
                                 try:
-                                    self.__REQUESTS.append(Request(request))
+                                    self.__ITEMS.append(HTTPExchange(request))
                                 except TypeError:
                                     raise TypeError(f"The value of request #{index} is not a dictionary")
                                 except InvalidRequestError as reason:
@@ -57,5 +60,11 @@ class Parse:
             raise InvalidPathError("The value you provided as the file path is falsy.")
 
     def __iter__(self):
-        for request in self.__REQUESTS:
+        for request in self.__ITEMS:
             yield request
+
+    def get_items(self) -> list[HTTPExchange]:
+        return self.__ITEMS
+
+    def get_requests(self) -> list[Request]:
+        return self.__REQUESTS
