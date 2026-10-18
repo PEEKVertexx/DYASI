@@ -3,10 +3,12 @@ from beartype import beartype
 import dyasi.http.models as models
 from dyasi.json.config_loader import DEFAULTS
 from dyasi.exceptions import ClientRequestError
+import time
 
 @beartype
 def send(request: models.Request):
     try:
+        time.sleep(DEFAULTS.cooldown)
         method = getattr(requests, request.method.lower())
         response = method(url=request.url + request.path, params=request.query, data=request.body, headers=request.headers)
         return response
