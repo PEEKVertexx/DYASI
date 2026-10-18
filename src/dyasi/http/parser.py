@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from beartype import beartype
 from dyasi.exceptions import InvalidPathError, InvalidRequestError
 from dyasi.http.models import HTTPExchange, Request
+from dyasi.scope.engine import Scope
+from dyasi.json.config_loader import DEFAULTS
 
     
 @dataclass
@@ -32,10 +34,7 @@ class Parse:
                             for key, value in REQUESTS.items():
                                 # Creating an object from the request
                                 try:
-                                    EXCHANGED_OBJECT = HTTPExchange(value)
-                                    self.__ITEMS.append(EXCHANGED_OBJECT)
-                                    self.__REQUESTS.append(EXCHANGED_OBJECT.request)
-                                    self.__RESPONSES.append(EXCHANGED_OBJECT.response)
+                                    self.__REQUESTS.append(value)
                                 except TypeError:
                                     raise TypeError(f"The value of request with id {key} is not a dictionary!")
                                 except InvalidRequestError as reason:
@@ -44,13 +43,28 @@ class Parse:
                         elif isinstance(REQUESTS, list):
                             for index, request in enumerate(REQUESTS):
                                 try:
-                                    self.__ITEMS.append(HTTPExchange(request))
+                                    self.__REQUESTS.append(Request(request))
                                 except TypeError:
                                     raise TypeError(f"The value of request #{index} is not a dictionary")
                                 except InvalidRequestError as reason:
                                     raise InvalidRequestError(f"Request #{key} is not a valid request: {reason}")
 
+                        # Checking if the items are in scope
+
+
                     self.iteration_number = 0
+
+                    # Filtering by scope
+                    if DEFAULTS.scope.enabled:
+                        # Getting in scope requests
+                        self.__REQUESTS = Scope(self.__REQUESTS).get_requests()
+
+                    # Getting HTTP Exchanges
+                    for request in self.__REQUESTS:
+                        EXCHANGE_OBJECT = HTTPExchange(request)
+
+                        self.__ITEMS.append(EXCHANGE_OBJECT)
+                        self.__RESPONSES.append(EXCHANGE_OBJECT)
                     
                 else:
                     raise IsADirectoryError(f"\"{self.file_path}\" is a directory.")
