@@ -13,7 +13,7 @@ default_http_version: str = "HTTP/1.1"
 class Request:
     request: dict
 
-    def __post__init__(self):
+    def __post_init__(self):
         MODIFIED_REQUEST = self.request.copy()
 
         # Checking the the existense of the keys of each self.request. I think necessary parts are:
@@ -183,8 +183,7 @@ class Request:
 @beartype
 @dataclass
 class HTTPExchange:
-    request_dictionary: dict
+    request: Request
 
     def __post_init__(self):
-        self.request = Request(self.request_dictionary)
         self.response = client.send(self.request)
