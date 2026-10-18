@@ -10,9 +10,9 @@ import keyword
 @dataclass
 class CreateObject:
     python_object: dict
-    recursive: bool | None = True
     # NOTE: use ignore headers feature only when you want recursion and don't want the values of headers key ( as it might be a dictionary )
-    keys_to_ignore: list | set | tuple | None
+    keys_to_ignore: list | set | tuple | None    
+    recursive: bool | None = True
 
     def __post_init__(self) -> None:
             for key, value in self.python_object.items():
@@ -30,14 +30,14 @@ class CreateObject:
 
                 # Checking the value
                 if isinstance(value, dict):
-                    if self.ignore_headers:
+                    if self.keys_to_ignore:
                         # Checking if the recursion is allowed
                         if self.recursive:
                             # Ignoring the headers if the key being headers
                             if key in self.keys_to_ignore:
                                 pass
                             else:
-                                setattr(self, key, CreateObject(value))
+                                setattr(self, key, CreateObject(value, []))
                                 continue
                 setattr(self, key, value)
 
