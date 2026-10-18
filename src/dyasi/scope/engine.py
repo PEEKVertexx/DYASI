@@ -9,7 +9,7 @@ import dyasi.http.models as models
 @dataclass
 class Scope:
     # NOTE: this option is for raising exceptions if a request being out of scope in requests, the class would raise exceptions for other cases
-    requests: list[models.Request]
+    requests: list[models.HTTPExchange]
 
     def __post_init__(self):
         self.__good_requests: list[models.Request] = []
@@ -19,7 +19,7 @@ class Scope:
             raise ScopeEngineError("The scope feature is not enabled!")
 
         # Checking requests
-        if not all(map(lambda request: isinstance(request, models.Request))):
+        if not all(map(lambda request: isinstance(request, models.HTTP))):
             raise ScopeEngineError("You must provide a list that contains only request object!")
 
         # Checking in scope assets
