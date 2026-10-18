@@ -10,7 +10,6 @@ import dyasi.http.models as models
 class Scope:
     # NOTE: this option is for raising exceptions if a request being out of scope in requests, the class would raise exceptions for other cases
     requests: list[models.Request]
-    raise_error: bool | None = False
 
     def __post_init__(self):
         self.__good_requests: list[models.Request] = []
