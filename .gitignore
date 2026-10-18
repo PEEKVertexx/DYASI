@@ -4,3 +4,4 @@ src/dyasi/__pycache__/
 src/dyasi/json/__pycache__/
 src/dyasi/http/__pycache__/
 src/dyasi.egg-info/
+src/dyasi/scope/__pycache__/
