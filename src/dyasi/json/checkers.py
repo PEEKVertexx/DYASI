@@ -1,5 +1,6 @@
 from beartype import beartype
 from dyasi.exceptions import ConfigError
+from dyasi.llm.provider import SUPPORTED_LLM_PROVIDERS
 
 @beartype
 def version(value: str) -> str:
@@ -211,3 +212,45 @@ def scope(value: dict) -> dict:
             raise ConfigError("You enabled the scope feature , but you didn't proivde any assets")
 
     return MODIFIED_VERSION
+
+@beartype
+def llm_providers(value: dict) -> dict:
+    # Checking if any provider is provided
+    if not value:
+        raise ConfigError("You didn't provide any llm provider, DYASI cannot work without LLM")
+
+    # Checking if it consists of non-empty dictionaries and each dictionary is valid
+    
+    ## Checker function
+    def check_provider(provider):
+        # Checking if it's a dictionary
+        if not isinstance(provider, dict):
+            return False
+
+        # Checking if it's not empty
+        if not provider:
+            return False
+
+        # Getting the first key of the provider
+        first_key = next(iter(provider))
+
+
+        # Checking if the first key is a supported LLM provider
+        if first_key not in SUPPORTED_LLM_PROVIDERS:
+            return False
+
+        # Checking if the value of the first key is an string
+        elif not isinstance(provider[first_key], str):
+            return False
+
+        # Checking if the value of the first key is empty
+        elif not provider[first_key]:
+            return False
+
+        return True
+
+    # Checking if the entire providers match the rules
+    if not all([check_provider(provider) for provider in value]):
+        raise ConfigError("You provided an invalid LLM provider, the providers must follow this rules: \n\n1. Consists of dictionaries\n2. All of them must be a dictionary, each dictionary is actually a provider\n3. The dictonaries cannot being empty\n4. The first key of the provider dictionary must be a non-empty string\n5. The provider must be supported by DYASI\n6. The value of the first key ( which is the API key of the provider ) must be a non-empty string")
+
+    return value
