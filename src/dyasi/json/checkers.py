@@ -236,7 +236,7 @@ def llm_providers(value: dict) -> dict:
 
 
         # Checking if the first key is a supported LLM provider
-        if first_key not in SUPPORTED_LLM_PROVIDERS:
+        if first_key.strip().lower() not in SUPPORTED_LLM_PROVIDERS:
             return False
 
         # Checking if the value of the first key is an string
