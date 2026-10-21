@@ -42,5 +42,8 @@
             "Upgrade",
             "Accept-Ranges"
         ]
+    },
+    "llm_providers": {
+        "ollama": "YOUR_OLLAMA_API_KEY"
     }
 }
