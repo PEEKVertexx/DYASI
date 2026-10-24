@@ -1,6 +1,7 @@
 from beartype import beartype
 from dyasi.exceptions import ConfigError
 from dyasi.llm.provider import SUPPORTED_LLM_PROVIDERS
+import importlib.util
 
 @beartype
 def version(value: str) -> str:
@@ -236,7 +237,7 @@ def llm_providers(value: dict) -> dict:
 
 
         # Checking if the first key is a supported LLM provider
-        if first_key.strip().lower() not in SUPPORTED_LLM_PROVIDERS:
+        if importlib.util.find_spec(f"dyasi.llm.providers.{first_key.strip().lower()}") is None:
             return False
 
         # Checking if the value of the first key is an string
