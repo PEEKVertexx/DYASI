@@ -7,6 +7,7 @@ from dyasi.http.models import HTTPExchange, Request
 from dyasi.scope.engine import Scope
 from dyasi.json.config_loader import DEFAULTS
 from requests import Response
+from dyasi.utils import log
 
 @beartype
 @dataclass
@@ -53,15 +54,19 @@ class Parse:
                                 except InvalidRequestError as reason:
                                     raise InvalidRequestError(f"Request #{key} is not a valid request: {reason}")
 
-                        # Checking if the items are in scope
 
+                    # Logging the number of requests
+                    log(f"You've provided {len(self.__REQUESTS)} requests.")
 
                     self.iteration_number = 0
 
                     # Filtering by scope
                     if DEFAULTS.scope.enabled:
                         # Getting in scope requests
-                        self.__REQUESTS = Scope(self.__REQUESTS).get_requests()
+                        self.__IN_SCOPE_REQUESTS = Scope(self.__REQUESTS).get_requests()
+
+                        # Logging the difference
+                        log(f"Removed {len(self.__REQUESTS) - len(self.__IN_SCOPE_REQUESTS)} requests due to being out of scope. Total requests: {len(self.__IN_SCOPE_REQUESTS)}")
 
                     # Getting HTTP Exchanges
                     for request in self.__REQUESTS:
