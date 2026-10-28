@@ -7,14 +7,27 @@ from dyasi.exceptions import InvalidLogLevelError
 # Logging feature
 @beartype
 def log(*messages: Any, level: str | None="info") -> None:
+    # Defining the level aliases
+    INFO_ALIASES = ["INFO", "I"]
+    ERROR_ALIASES = ["ERROR", "ERR", "E"]
+    WARNING_ALIASES = ["WARN", "WARNING", "W"]
+
+    # Space trippig the level
+    level = level.strip().upper()
+
     # Determining the log type
-    if level.lower() == "info":
-        level = Fore.GREEN + Style.BRIGHT + level.upper()
-    elif level.lower() == "error":
-        level = Fore.RED + Style.BRIGHT + level.upper()
-    elif level.lower() == "warn":
-        level = "warning"
-        level = "\033[38;2;255;215;0m" + Style.BRIGHT + level.upper()
+    if level in INFO_ALIASES:
+        level = "INFO" if level != "INFO" else level
+        
+        level = Fore.GREEN + Style.BRIGHT + level
+    elif level in ERROR_ALIASES:
+        level = "ERROR" if level != "ERROR" else level
+
+        level = Fore.RED + Style.BRIGHT + level
+    elif level in WARNING_ALIASES:
+        level = "WARNING" if level != "WARNING" else level
+
+        level = "\033[38;2;255;215;0m" + Style.BRIGHT + level
     else:
         raise InvalidLogLevelError("Log level is invalid.")
 
