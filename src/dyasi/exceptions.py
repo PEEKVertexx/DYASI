@@ -24,3 +24,6 @@ class ClientRequestError(Exception):
 
 class ScopeEngineError(Exception):
     pass
+
+class FeatureDisabledError(Exception):
+    pass
