@@ -1,6 +1,7 @@
 {
     "version": "v0.1",
     "cooldown": 0,
+    "record_llm_usages": true,
     "scope": {
         "enabled": false,
         "in_scope_assets": [],
