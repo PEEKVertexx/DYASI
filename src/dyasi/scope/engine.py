@@ -1,6 +1,6 @@
 from beartype import beartype
 from dataclasses import dataclass
-from dyasi.exceptions import ScopeEngineError
+from dyasi.exceptions import ScopeEngineError, FeatureDisabledError
 from dyasi.utils import log
 from dyasi.json.config_loader import DEFAULTS
 import dyasi.http.models as models
@@ -16,7 +16,7 @@ class Scope:
 
         # Checking if user enabled the scope feature
         if not DEFAULTS.scope.enabled:
-            raise ScopeEngineError("The scope feature is not enabled!")
+            raise FeatureDisabledError("The scope feature is not enabled!")
 
         # Checking requests
         if not all(map(lambda request: isinstance(request, models.HTTP))):
