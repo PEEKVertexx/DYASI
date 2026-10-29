@@ -255,3 +255,7 @@ def llm_providers(value: dict) -> dict:
         raise ConfigError("You provided an invalid LLM provider, the providers must follow this rules: \n\n1. Consists of dictionaries\n2. All of them must be a dictionary, each dictionary is actually a provider\n3. The dictonaries cannot being empty\n4. The first key of the provider dictionary must be a non-empty string\n5. The provider must be supported by DYASI\n6. The value of the first key ( which is the API key of the provider ) must be a non-empty string")
 
     return value
+
+@beartype
+def record_llm_usages(value: bool):
+    return value
