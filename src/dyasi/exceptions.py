@@ -27,3 +27,6 @@ class ScopeEngineError(Exception):
 
 class FeatureDisabledError(Exception):
     pass
+
+class MissingRequirementError(Exception):
+    pass
