@@ -16,7 +16,10 @@ class Defaults:
         for key, value in self.loaded_object.json_data.items():
             try:
                 # Calling the checker function of by the name of the key
-                self.MODIFIED_DICTIONARY[key] = getattr(checkers, key)(value)
+                if hasattr(checkers, key):
+                    self.MODIFIED_DICTIONARY[key] = getattr(checkers, key)(value)
+                else:
+                    raise AttributeError
             except AttributeError:
                 log(f"You should provide a checker function for the key \"{key}\" at json/checkers.py. If you don't know what is it , Please contact the owner", level="warn")
             except ConfigError as e:
