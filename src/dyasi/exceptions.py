@@ -30,3 +30,12 @@ class FeatureDisabledError(Exception):
 
 class MissingRequirementError(Exception):
     pass
+
+class MissingPropertyError(Exception):
+    pass
+
+class InappropiratePropertyError(Exception):
+    pass
+
+class InvalidTaskError(Exception):
+    pass
